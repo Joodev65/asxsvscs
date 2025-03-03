@@ -9,84 +9,89 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f4f4f4;
+            background: url('https://files.catbox.moe/apwzm3.jpg') no-repeat center center/cover;
+            color: white;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
         }
+
         .container {
-            max-width: 400px;
-            margin: 20px auto;
-            background: #fff;
+            background: rgba(0, 0, 0, 0.9);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
+            width: 320px;
         }
+
         input {
             width: 100%;
             padding: 8px;
             margin: 5px 0;
             border: 1px solid #ccc;
             border-radius: 5px;
+            text-align: center;
         }
+
         button {
             width: 100%;
             padding: 10px;
-            background: #007bff;
+            background: linear-gradient(45deg, red, blue, green, yellow);
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            animation: borderAnimation 2s infinite linear;
         }
+
         button:hover {
-            background: #0056b3;
+            background: linear-gradient(45deg, yellow, green, blue, red);
         }
+
+        @keyframes borderAnimation {
+            0% { border-color: red; }
+            25% { border-color: blue; }
+            50% { border-color: green; }
+            75% { border-color: yellow; }
+            100% { border-color: red; }
+        }
+
         #bon {
             display: none;
-            background: white;
+            background: black;
             padding: 15px;
-            border: 1px solid #000;
+            border: 2px solid white;
             max-width: 320px;
             margin: 20px auto;
             text-align: left;
             font-family: monospace;
         }
-        .bon-header {
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .bon-line {
-            border-bottom: 1px dashed #000;
-            margin: 5px 0;
-        }
     </style>
     <script>
-        // Cek apakah user sudah login
         if (localStorage.getItem("isLoggedIn") !== "true") {
-            window.location.href = "index.html"; // Jika tidak, redirect ke login
+            window.location.href = "index.html"; 
         }
 
         function buatBon() {
             let namaProduk = document.getElementById("namaProduk").value;
             let tanggalTransaksi = document.getElementById("tanggalTransaksi").value;
-            let hargaProduk = parseFloat(document.getElementById("hargaProduk").value);
-            let uangDibayar = parseFloat(document.getElementById("uangDibayar").value);
+            let hargaProduk = document.getElementById("hargaProduk").value;
+            let uangDibayar = document.getElementById("uangDibayar").value;
             
-            if (!namaProduk || !tanggalTransaksi || isNaN(hargaProduk) || isNaN(uangDibayar)) {
+            if (!namaProduk || !tanggalTransaksi || !hargaProduk || !uangDibayar) {
                 alert("Harap isi semua data dengan benar.");
                 return;
             }
 
             let kembalian = uangDibayar - hargaProduk;
-            if (kembalian < 0) {
-                alert("Uang dibayar kurang!");
-                return;
-            }
 
             document.getElementById("bonNama").innerText = namaProduk;
             document.getElementById("bonTanggal").innerText = tanggalTransaksi;
-            document.getElementById("bonHarga").innerText = hargaProduk.toLocaleString();
-            document.getElementById("bonBayar").innerText = uangDibayar.toLocaleString();
-            document.getElementById("bonKembalian").innerText = kembalian.toLocaleString();
+            document.getElementById("bonHarga").innerText = hargaProduk;
+            document.getElementById("bonBayar").innerText = uangDibayar;
+            document.getElementById("bonKembalian").innerText = kembalian;
             
             document.getElementById("bon").style.display = "block";
         }
@@ -104,12 +109,11 @@
     </div>
 
     <div id="bon">
-        <div class="bon-header">Struk Transaksi Joo</div>
         <p><strong>Nama Produk:</strong> <span id="bonNama"></span></p>
         <p><strong>Tanggal:</strong> <span id="bonTanggal"></span></p>
-        <p><strong>Harga:</strong> Rp <span id="bonHarga"></span></p>
-        <p><strong>Bayar:</strong> Rp <span id="bonBayar"></span></p>
-        <p><strong>Kembalian:</strong> Rp <span id="bonKembalian"></span></p>
+        <p><strong>Harga:</strong> <span id="bonHarga"></span></p>
+        <p><strong>Bayar:</strong> <span id="bonBayar"></span></p>
+        <p><strong>Kembalian:</strong> <span id="bonKembalian"></span></p>
     </div>
 
 </body>
