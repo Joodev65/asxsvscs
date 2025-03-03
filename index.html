@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Joo</title>
+    <style>
+        @keyframes glow {
+            0% { box-shadow: 0 0 5px #ff4d4d; }
+            50% { box-shadow: 0 0 20px #ff4d4d; }
+            100% { box-shadow: 0 0 5px #ff4d4d; }
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: url('https://files.catbox.moe/apwzm3.jpg') no-repeat center center/cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+        }
+
+        .login-container {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
+            width: 300px;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        h2 {
+            font-size: 24px;
+            text-shadow: 0 0 10px red, 0 0 20px white;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            outline: none;
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+            animation: glow 1.5s infinite alternate;
+        }
+
+        button:hover {
+            background: darkred;
+        }
+
+        .error {
+            color: red;
+            font-weight: bold;
+            margin-top: 10px;
+            text-shadow: 0 0 5px white;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <h2>Login Joo</h2>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="cekLogin()">Login</button>
+        <p id="errorMsg" class="error"></p>
+    </div>
+
+    <script>
+        function cekLogin() {
+            let user = document.getElementById("username").value;
+            let pass = document.getElementById("password").value;
+            let errorMsg = document.getElementById("errorMsg");
+
+            if (user === "Joo" && pass === "Joostore") {
+                localStorage.setItem("isLoggedIn", "true"); // Simpan status login
+                window.location.href = "bon.html"; // Redirect ke halaman bon
+            } else {
+                errorMsg.innerText = "Username atau Password Salah!";
+            }
+        }
+    </script>
+
+</body>
+</html>

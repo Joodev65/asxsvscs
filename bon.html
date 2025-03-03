@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transaksi Joo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        #bon {
+            display: none;
+            background: white;
+            padding: 15px;
+            border: 1px solid #000;
+            max-width: 320px;
+            margin: 20px auto;
+            text-align: left;
+            font-family: monospace;
+        }
+        .bon-header {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .bon-line {
+            border-bottom: 1px dashed #000;
+            margin: 5px 0;
+        }
+    </style>
+    <script>
+        // Cek apakah user sudah login
+        if (localStorage.getItem("isLoggedIn") !== "true") {
+            window.location.href = "index.html"; // Jika tidak, redirect ke login
+        }
+
+        function buatBon() {
+            let namaProduk = document.getElementById("namaProduk").value;
+            let tanggalTransaksi = document.getElementById("tanggalTransaksi").value;
+            let hargaProduk = parseFloat(document.getElementById("hargaProduk").value);
+            let uangDibayar = parseFloat(document.getElementById("uangDibayar").value);
+            
+            if (!namaProduk || !tanggalTransaksi || isNaN(hargaProduk) || isNaN(uangDibayar)) {
+                alert("Harap isi semua data dengan benar.");
+                return;
+            }
+
+            let kembalian = uangDibayar - hargaProduk;
+            if (kembalian < 0) {
+                alert("Uang dibayar kurang!");
+                return;
+            }
+
+            document.getElementById("bonNama").innerText = namaProduk;
+            document.getElementById("bonTanggal").innerText = tanggalTransaksi;
+            document.getElementById("bonHarga").innerText = hargaProduk.toLocaleString();
+            document.getElementById("bonBayar").innerText = uangDibayar.toLocaleString();
+            document.getElementById("bonKembalian").innerText = kembalian.toLocaleString();
+            
+            document.getElementById("bon").style.display = "block";
+        }
+    </script>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Transaksi Joo</h2>
+        <input type="text" id="namaProduk" placeholder="Nama Produk">
+        <input type="date" id="tanggalTransaksi">
+        <input type="number" id="hargaProduk" placeholder="Harga Produk">
+        <input type="number" id="uangDibayar" placeholder="Uang Dibayar">
+        <button onclick="buatBon()">Buat Bon</button>
+    </div>
+
+    <div id="bon">
+        <div class="bon-header">Struk Transaksi Joo</div>
+        <p><strong>Nama Produk:</strong> <span id="bonNama"></span></p>
+        <p><strong>Tanggal:</strong> <span id="bonTanggal"></span></p>
+        <p><strong>Harga:</strong> Rp <span id="bonHarga"></span></p>
+        <p><strong>Bayar:</strong> Rp <span id="bonBayar"></span></p>
+        <p><strong>Kembalian:</strong> Rp <span id="bonKembalian"></span></p>
+    </div>
+
+</body>
+</html>
