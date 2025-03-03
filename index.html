@@ -5,12 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Joo</title>
     <style>
-        @keyframes glow {
-            0% { box-shadow: 0 0 5px #ff4d4d; }
-            50% { box-shadow: 0 0 20px #ff4d4d; }
-            100% { box-shadow: 0 0 5px #ff4d4d; }
+        @keyframes borderAnimation {
+            0% { border-color: red; }
+            25% { border-color: blue; }
+            50% { border-color: green; }
+            75% { border-color: yellow; }
+            100% { border-color: red; }
         }
-        
+
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -23,17 +25,18 @@
         }
 
         .login-container {
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.9);
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(255, 77, 77, 0.5);
-            width: 300px;
-            animation: glow 1.5s infinite alternate;
+            border: 4px solid;
+            animation: borderAnimation 3s infinite linear;
+            width: 320px;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.7);
         }
 
         h2 {
             font-size: 24px;
-            text-shadow: 0 0 10px red, 0 0 20px white;
+            text-shadow: 0 0 10px cyan, 0 0 20px white;
         }
 
         input {
@@ -56,18 +59,18 @@
         button {
             width: 100%;
             padding: 10px;
-            background: red;
+            background: linear-gradient(45deg, red, blue, green, yellow);
             color: white;
             border: none;
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
             transition: 0.3s;
-            animation: glow 1.5s infinite alternate;
+            animation: borderAnimation 2s infinite linear;
         }
 
         button:hover {
-            background: darkred;
+            background: linear-gradient(45deg, yellow, green, blue, red);
         }
 
         .error {
@@ -95,8 +98,8 @@
             let errorMsg = document.getElementById("errorMsg");
 
             if (user === "Joo" && pass === "Joostore") {
-                localStorage.setItem("isLoggedIn", "true"); // Simpan status login
-                window.location.href = "bon.html"; // Redirect ke halaman bon
+                localStorage.setItem("isLoggedIn", "true"); 
+                window.location.href = "bon.html"; 
             } else {
                 errorMsg.innerText = "Username atau Password Salah!";
             }
