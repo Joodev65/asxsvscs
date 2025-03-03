@@ -44,6 +44,7 @@
             border-radius: 5px;
             cursor: pointer;
             animation: borderAnimation 2s infinite linear;
+            margin-top: 10px;
         }
 
         button:hover {
@@ -68,6 +69,10 @@
             text-align: left;
             font-family: monospace;
         }
+
+        #downloadBtn {
+            display: none;
+        }
     </style>
     <script>
         if (localStorage.getItem("isLoggedIn") !== "true") {
@@ -86,14 +91,27 @@
             }
 
             let kembalian = uangDibayar - hargaProduk;
+            let tanggalPembuatan = new Date().toLocaleString();
 
             document.getElementById("bonNama").innerText = namaProduk;
             document.getElementById("bonTanggal").innerText = tanggalTransaksi;
             document.getElementById("bonHarga").innerText = hargaProduk;
             document.getElementById("bonBayar").innerText = uangDibayar;
             document.getElementById("bonKembalian").innerText = kembalian;
-            
+            document.getElementById("bonWaktu").innerText = tanggalPembuatan;
+
             document.getElementById("bon").style.display = "block";
+            document.getElementById("downloadBtn").style.display = "block";
+        }
+
+        function downloadStruk() {
+            let bonElement = document.getElementById("bon");
+            html2canvas(bonElement).then(canvas => {
+                let link = document.createElement("a");
+                link.href = canvas.toDataURL("image/png");
+                link.download = "Struk_Joo.png";
+                link.click();
+            });
         }
     </script>
 </head>
@@ -109,12 +127,16 @@
     </div>
 
     <div id="bon">
+        <h3>Struk Transaksi Joo</h3>
         <p><strong>Nama Produk:</strong> <span id="bonNama"></span></p>
-        <p><strong>Tanggal:</strong> <span id="bonTanggal"></span></p>
-        <p><strong>Harga:</strong> <span id="bonHarga"></span></p>
-        <p><strong>Bayar:</strong> <span id="bonBayar"></span></p>
-        <p><strong>Kembalian:</strong> <span id="bonKembalian"></span></p>
+        <p><strong>Tanggal Transaksi:</strong> <span id="bonTanggal"></span></p>
+        <p><strong>Harga:</strong> Rp <span id="bonHarga"></span></p>
+        <p><strong>Uang Dibayar:</strong> Rp <span id="bonBayar"></span></p>
+        <p><strong>Kembalian:</strong> Rp <span id="bonKembalian"></span></p>
+        <p><strong>Tanggal Pembuatan:</strong> <span id="bonWaktu"></span></p>
     </div>
+
+    <button id="downloadBtn" onclick="downloadStruk()">Download Struk</button>
 
 </body>
 </html>
