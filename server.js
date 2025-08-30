@@ -7,22 +7,18 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-// Telegram Bot Configuration
 const TELEGRAM_BOT_TOKEN = '7789321645:AAEh6BiwNR6SgKI_8ZIE-SfJm3J7SFS5yvw';
 const TELEGRAM_OWNER_ID = '7978512548';
 
-// Simple in-memory user storage (for demo purposes)
 const users = {
   'admin': 'password123',
   'joocode': 'admin2024'
 };
 
-// Get client IP helper
 function getClientIP(req) {
   return req.headers['x-forwarded-for'] || 
          req.connection.remoteAddress || 
@@ -31,25 +27,18 @@ function getClientIP(req) {
          '127.0.0.1';
 }
 
-// Validate WhatsApp number format
 function isValidWhatsAppNumber(number) {
-  // Remove all spaces and special characters except +
   const cleanNumber = number.replace(/[\s\-\(\)]/g, '');
   
-  // Check if it starts with + and has 10-15 digits
   const phoneRegex = /^\+[1-9]\d{9,14}$/;
   
   return phoneRegex.test(cleanNumber);
 }
 
-// Google Apps Script URL (you need to replace this with your actual deployment URL)
-const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec';
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwysgY7BebquagbOXVmPkM5WxuHpgTTZSWhQPKHp8g/dev';
 
-// Send email via Google Apps Script
 async function sendUnbanEmailViaGoogleScript(number, banType, clientIP) {
   try {
-    // For now, we'll use a mock implementation
-    // In production, replace with your actual Google Apps Script URL
     
     const emailTemplates = {
       'spam': {
@@ -116,23 +105,12 @@ Date: ${new Date().toLocaleString('id-ID')}`
 
     const template = emailTemplates[banType] || emailTemplates['spam'];
     
-    // Simulate email sending (replace with actual Google Apps Script call)
     console.log(`📧 Email would be sent to WhatsApp Support:`);
     console.log(`Subject: ${template.subject}`);
     console.log(`Body: ${template.body}`);
-    
-    // Actual Google Apps Script call (uncomment when you have the URL)
-    // const response = await axios.post(GOOGLE_APPS_SCRIPT_URL, {
-    //   number: number,
-    //   banType: banType,
-    //   clientIP: clientIP,
-    //   subject: template.subject,
-    //   body: template.body
-    // });
-    
-    // For demonstration, we'll make a real call but with error handling
+
     try {
-      if (GOOGLE_APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec') {
+      if (GOOGLE_APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbwysgY7BebquagbOXVmPkM5WxuHpgTTZSWhQPKHp8g/exec') {
         const response = await axios.post(GOOGLE_APPS_SCRIPT_URL, {
           number: number,
           banType: banType,
@@ -140,7 +118,7 @@ Date: ${new Date().toLocaleString('id-ID')}`
           subject: template.subject,
           body: template.body
         }, {
-          timeout: 10000 // 10 second timeout
+          timeout: 10000  
         });
         
         if (response.data && response.data.success) {
@@ -166,32 +144,21 @@ Date: ${new Date().toLocaleString('id-ID')}`
   }
 }
 
-// Real WhatsApp ban status checker
 async function checkWhatsAppBanStatus(number) {
   try {
-    // Clean the number
     const cleanNumber = number.replace(/[\s\-\(\)]/g, '');
     
-    // Advanced ban detection logic
     const banChecks = {
-      // Check number format and country code
       formatCheck: isValidWhatsAppNumber(cleanNumber),
       
-      // Simulate checking against WhatsApp's database
-      // In real implementation, this would call WhatsApp Business API or similar
       isDatabaseBanned: false,
       
-      // Check if number follows suspicious patterns
       isSuspiciousPattern: checkSuspiciousPattern(cleanNumber),
       
-      // Check if number has been reported before (mock data)
-      hasReports: Math.random() < 0.3, // 30% chance of having reports
-      
-      // Check age of number (newer numbers more likely to be banned)
+      hasReports: Math.random() < 0.3, 
       isNewNumber: checkIfNewNumber(cleanNumber)
     };
     
-    // Determine ban status based on checks
     let banType, details, likelihood;
     
     if (!banChecks.formatCheck) {
@@ -238,40 +205,29 @@ async function checkWhatsAppBanStatus(number) {
   }
 }
 
-// Helper function to check suspicious patterns
 function checkSuspiciousPattern(number) {
-  // Check for patterns that might indicate automated/bulk numbers
   const suspicious = [
-    // Sequential numbers
-    /(\d)\1{3,}/, // Same digit repeated 4+ times
-    // Common spam patterns
-    /^(\+62|62|0)8[0-9]{2}(000|111|222|333|444|555|666|777|888|999)/, // Pattern numbers
-    // Recently created bulk numbers
-    /^(\+62|62|0)8[0-9]{2}[0-9]{4}(00|11|22|33|44|55|66|77|88|99)$/ // Ending patterns
+    /(\d)\1{3,}/, 
+    /^(\+62|62|0)8[0-9]{2}(000|111|222|333|444|555|666|777|888|999)/, 
+    /^(\+62|62|0)8[0-9]{2}[0-9]{4}(00|11|22|33|44|55|66|77|88|99)$/ 
   ];
   
   return suspicious.some(pattern => pattern.test(number));
 }
 
-// Helper function to check if number is new (simulated)
 function checkIfNewNumber(number) {
-  // Simulate checking registration date
-  // In real implementation, this would check against WhatsApp's registration database
   const hash = number.split('').reduce((a, b) => {
     a = ((a << 5) - a) + b.charCodeAt(0);
     return a & a;
   }, 0);
   
-  // Use hash to simulate "registration age"
-  return Math.abs(hash) % 100 < 20; // 20% chance of being "new"
+  return Math.abs(hash) % 100 < 20; 
 }
 
-// Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Login endpoint
 app.post('/api/login', (req, res) => {
   const { username, password } = req.body;
   
@@ -282,13 +238,11 @@ app.post('/api/login', (req, res) => {
   }
 });
 
-// Submit unban request
 app.post('/api/unban', async (req, res) => {
   try {
     const { number, banType } = req.body;
     const clientIP = getClientIP(req);
     
-    // Validate phone number format
     if (!isValidWhatsAppNumber(number)) {
       return res.status(400).json({
         success: false,
@@ -296,7 +250,6 @@ app.post('/api/unban', async (req, res) => {
       });
     }
     
-    // Send notification to Telegram
     const telegramMessage = `🚨 New Unban Request\n\nIP: ${clientIP}\nNumber: ${number}\nType: ${banType}\nTime: ${new Date().toLocaleString('id-ID')}`;
     
     await axios.post(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
@@ -304,7 +257,6 @@ app.post('/api/unban', async (req, res) => {
       text: telegramMessage
     });
     
-    // Send email via Google Apps Script
     const emailResult = await sendUnbanEmailViaGoogleScript(number, banType, clientIP);
     
     if (!emailResult.success) {
@@ -329,12 +281,10 @@ app.post('/api/unban', async (req, res) => {
   }
 });
 
-// Check ban status
 app.post('/api/check-ban', async (req, res) => {
   try {
     const { number } = req.body;
     
-    // Validate phone number format
     if (!isValidWhatsAppNumber(number)) {
       return res.status(400).json({
         success: false,
@@ -342,7 +292,6 @@ app.post('/api/check-ban', async (req, res) => {
       });
     }
     
-    // Real WhatsApp ban status check
     const banStatus = await checkWhatsAppBanStatus(number);
     
     res.json({
