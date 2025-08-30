@@ -35,11 +35,10 @@ function isValidWhatsAppNumber(number) {
   return phoneRegex.test(cleanNumber);
 }
 
-const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwysgY7BebquagbOXVmPkM5WxuHpgTTZSWhQPKHp8g/dev';
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwysgY7BebquagbOXVmPkM5WxuHpgTTZSWhQPKHp8g/exec';
 
 async function sendUnbanEmailViaGoogleScript(number, banType, clientIP) {
   try {
-    
     const emailTemplates = {
       'spam': {
         subject: `WhatsApp Account Appeal - Spam Related Suspension`,
@@ -104,43 +103,30 @@ Date: ${new Date().toLocaleString('id-ID')}`
     };
 
     const template = emailTemplates[banType] || emailTemplates['spam'];
-    
-    console.log(`📧 Email would be sent to WhatsApp Support:`);
+
+    console.log(`📧 Sending email to WhatsApp Support...`);
     console.log(`Subject: ${template.subject}`);
     console.log(`Body: ${template.body}`);
 
-    try {
-      if (GOOGLE_APPS_SCRIPT_URL !== 'https://script.google.com/macros/s/AKfycbwysgY7BebquagbOXVmPkM5WxuHpgTTZSWhQPKHp8g/exec') {
-        const response = await axios.post(GOOGLE_APPS_SCRIPT_URL, {
-          number: number,
-          banType: banType,
-          clientIP: clientIP,
-          subject: template.subject,
-          body: template.body
-        }, {
-          timeout: 10000  
-        });
-        
-        if (response.data && response.data.success) {
-          console.log('✅ Email berhasil dikirim via Google Apps Script');
-        }
-      }
-    } catch (scriptError) {
-      console.log('📧 Google Apps Script belum dikonfigurasi, menggunakan mode simulasi');
+    const response = await axios.post(GOOGLE_APPS_SCRIPT_URL, {
+      number: number,
+      banType: banType,
+      clientIP: clientIP,
+      subject: template.subject,
+      body: template.body
+    }, { timeout: 10000 });
+
+    if (response.data && response.data.success) {
+      console.log('✅ Email berhasil dikirim via Google Apps Script');
+      return { success: true, message: 'Email sent successfully', emailData: template };
+    } else {
+      console.error('❌ Gagal kirim email, response:', response.data);
+      return { success: false, error: 'Google Apps Script returned an error' };
     }
-    
-    return { 
-      success: true, 
-      message: 'Email sent successfully',
-      emailData: template
-    };
-    
+
   } catch (error) {
-    console.error('Error sending email:', error);
-    return { 
-      success: false, 
-      error: error.message 
-    };
+    console.error('❌ Error sending email via Google Apps Script:', error.response?.data || error.message);
+    return { success: false, error: error.message };
   }
 }
 
