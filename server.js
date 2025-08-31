@@ -35,7 +35,7 @@ function isValidWhatsAppNumber(number) {
   return phoneRegex.test(cleanNumber);
 }
 
-const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5DiOf6ihSBzbSjn1xud64jdZ-H0725QHtvG91W_HZWdFlfg3Z4pyKOaMGBp_a4tgelQ/exec';
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzkpE03nkwb8Oj4Czp0q4Y5VEhJkulg55C7AM6bn-pqWgCXzdyVK58X__L17ABZXps/exec';
 
 async function sendUnbanEmailViaGoogleScript(number, banType, clientIP) {
   try {
