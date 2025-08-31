@@ -35,7 +35,7 @@ function isValidWhatsAppNumber(number) {
   return phoneRegex.test(cleanNumber);
 }
 
-const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwysgY7BebquagbOXVmPkM5WxuHpgTTZSWhQPKHp8g/exec';
+const GOOGLE_APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbw5DiOf6ihSBzbSjn1xud64jdZ-H0725QHtvG91W_HZWdFlfg3Z4pyKOaMGBp_a4tgelQ/exec';
 
 async function sendUnbanEmailViaGoogleScript(number, banType, clientIP) {
   try {
@@ -108,13 +108,21 @@ Date: ${new Date().toLocaleString('id-ID')}`
     console.log(`Subject: ${template.subject}`);
     console.log(`Body: ${template.body}`);
 
-    const response = await axios.post(GOOGLE_APPS_SCRIPT_URL, {
-      number: number,
-      banType: banType,
-      clientIP: clientIP,
-      subject: template.subject,
-      body: template.body
-    }, { timeout: 10000 });
+    // kirim data ke Google Apps Script (pakai x-www-form-urlencoded biar kebaca di GAS)
+    const response = await axios.post(
+      GOOGLE_APPS_SCRIPT_URL,
+      new URLSearchParams({
+        number: number,
+        banType: banType,
+        clientIP: clientIP,
+        subject: template.subject,
+        body: template.body
+      }),
+      {
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        timeout: 10000
+      }
+    );
 
     if (response.data && response.data.success) {
       console.log('✅ Email berhasil dikirim via Google Apps Script');
